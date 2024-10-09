@@ -4,134 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loom Video Downloader</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             background-color: #f8f9fa;
-            color: #343a40;
-            padding: 30px;
-            max-width: 600px;
-            margin: auto;
-            border-radius: 8px;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
         h1 {
-            text-align: center;
-            color: #007bff;
             margin-bottom: 20px;
         }
-        input {
-            padding: 12px;
-            width: calc(100% - 24px);
-            margin-bottom: 15px;
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
             border: 1px solid #ced4da;
             border-radius: 5px;
-            font-size: 16px;
-            transition: border-color 0.2s;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        input:focus {
-            border-color: #007bff;
-            outline: none;
+            margin-bottom: 20px;
         }
         button {
-            padding: 12px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
             background-color: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 16px;
-            transition: background-color 0.2s;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
         }
         button:hover {
             background-color: #0056b3;
         }
-        .download-link {
+        .credits {
             margin-top: 20px;
-            display: none; /* Hidden by default */
-            text-align: center;
+            font-size: 14px;
         }
-        .download-link a {
-            display: inline-block;
-            padding: 12px 20px;
-            background-color: #28a745;
-            color: white;
-            border-radius: 5px;
+        a {
+            color: #007bff;
             text-decoration: none;
-            font-size: 16px;
-            transition: background-color 0.2s;
-        }
-        .download-link a:hover {
-            background-color: #218838;
-        }
-        .info {
-            margin-top: 15px;
-            font-size: 14px;
-            color: #6c757d;
-            text-align: center;
-        }
-        .footer {
-            margin-top: 30px;
-            text-align: center;
-            font-size: 14px;
-            color: #6c757d;
         }
     </style>
 </head>
 <body>
-    <h1><i class="fas fa-video"></i> Loom Video Downloader</h1>
-    <input type="text" id="loomUrl" placeholder="Enter Loom Video URL" />
-    <button id="downloadBtn"><i class="fas fa-download"></i> Get Download Link</button>
-    
-    <div class="download-link" id="downloadLinkContainer">
-        <a id="downloadLink" href="#" target="_blank">Download Video</a>
-    </div>
-    
-    <div class="info">
-        <p>Enter the Loom video URL above to get the download link.</p>
-    </div>
-
-    <div class="footer">
-        <p>&copy; 2024 Loom Video Downloader</p>
+    <div class="container">
+        <h1>Loom Video Downloader</h1>
+        <input type="text" id="loomUrl" placeholder="Enter Loom Video URL">
+        <button id="downloadBtn">Download Video</button>
+        <div class="credits">
+            Made with 💖 by <a href="https://instagram.com/sahilahmedd/" target="_blank">Sahil</a>
+        </div>
     </div>
 
     <script>
-        document.getElementById('downloadBtn').onclick = function() {
+        document.getElementById('downloadBtn').addEventListener('click', function() {
             const loomUrl = document.getElementById('loomUrl').value;
-            const videoId = extractVideoId(loomUrl);
-            const videoName = extractVideoName(loomUrl);
+            const videoId = loomUrl.split('/').pop();
 
             if (videoId) {
-                // Construct the download URL (assuming a static URL for simplicity)
-                const downloadUrl = `https://cdn.loom.com/sessions/transcoded/${videoId}.mp4?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9jZG4ubG9vbS5jb20vc2Vzc2lvbnMvdHJhbnNjb2RlZC9iZGMwNDk4YWVlYjQ0YjVhYjNjYjc0MWViZDBkMzQwNy5tcDQiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3Mjg0NzMzMDl9fX1dfQ__&Key-Pair-Id=KQOSYIR44AIC0&Signature=X3QYpNb8WXLFxOJAHidaVJ6aXC6paRWkeJj-I5NG7ldHO5l10TW~L-13-7b1SjziCKuh0ChtlErPHemyNIcWWOLTXki03rF~b5izXYP9iBaKB0PHqsJ7Bkx0~tNLLyNWGg6VFDxmoZZ212JjBcJ0vfNQUSC0wPS1jvjmYWmHPHnPvwCo8bgtyOq1S6gldZpjV5OwK2ETBsDYUYVDHkqPFrF9G1ZcBjYmpkdjMVb4XrOHeHZho8rXQuD4l9SLfDlh-akHQgJoDY8wmUWpnPYPgOpg0aaIwqPw7WMM16otEaC4K0rPz4nerUEr5TcrCMOrgAvxCLwcfM~1EZqcfbCygQ__`;
-                
-                const downloadLink = document.getElementById('downloadLink');
-                downloadLink.href = downloadUrl;
-                downloadLink.innerText = `Download Video (${videoName}.mp4)`;
-                downloadLink.download = `${videoName}.mp4`; // Set the download filename
-                
-                const downloadLinkContainer = document.getElementById('downloadLinkContainer');
-                downloadLinkContainer.style.display = 'block'; // Show the download link
+                const downloadUrl = `https://cdn.loom.com/sessions/transcoded/${videoId}.mp4`;
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.download = `${videoId}.mp4`; // Name of the video
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             } else {
-                alert('Invalid Loom URL. Please enter a valid URL.');
+                alert('Please enter a valid Loom URL.');
             }
-        };
-
-        function extractVideoId(url) {
-            const regex = /\/share\/([a-zA-Z0-9]+)/;
-            const match = url.match(regex);
-            return match ? match[1] : null; // Return video ID or null
-        }
-
-        function extractVideoName(url) {
-            // Use the last segment of the URL as the video name
-            const parts = url.split('/');
-            return parts[parts.length - 1]; // Return the last part as video name
-        }
+        });
     </script>
 </body>
 </html>
