@@ -57,7 +57,6 @@
     <div class="container">
         <h1>Loom Video Downloader</h1>
         <input type="text" id="loomUrl" placeholder="Enter Loom Video URL">
-        <input type="text" id="fileName" placeholder="Optional: Enter file name (without extension)">
         <button id="downloadBtn">Download Video</button>
         <div class="credits">
             Made with 💖 by <a href="https://instagram.com/sahilahmedd/" target="_blank">Sahil</a>
@@ -68,13 +67,12 @@
         document.getElementById('downloadBtn').addEventListener('click', function() {
             const loomUrl = document.getElementById('loomUrl').value;
             const videoId = loomUrl.split('/').pop();
-            const customFileName = document.getElementById('fileName').value.trim() || videoId; // Use videoId if no custom name
 
             if (videoId) {
                 const downloadUrl = `https://cdn.loom.com/sessions/transcoded/${videoId}.mp4`;
                 const link = document.createElement('a');
                 link.href = downloadUrl;
-                link.download = `${customFileName}.mp4`; // Use custom file name or video ID
+                link.download = `${videoId}.mp4`; // Name of the video
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
